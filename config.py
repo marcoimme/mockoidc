@@ -1,39 +1,37 @@
-from typing import Dict, List
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
+
 from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Configurazione del mock OIDC server"""
-    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore"  # Ignora campi extra (base_url e issuer sono calcolati dinamicamente)
+        extra="ignore",  # Ignora campi extra (base_url e issuer sono calcolati dinamicamente)
     )
-    
+
     # Server settings
     host: str = Field(default="0.0.0.0", description="Host del server")
     port: int = Field(default=8080, description="Porta del server")
 
-    
     # Token settings
     access_token_expiry: int = Field(default=3600, description="Scadenza access token in secondi")
     id_token_expiry: int = Field(default=3600, description="Scadenza id token in secondi")
     authorization_code_expiry: int = Field(default=600, description="Scadenza authorization code in secondi")
-    
+
     # Supported features
     supported_scopes: List[str] = Field(
-        default=["openid", "profile", "email", "offline_access"],
-        description="Scopes supportati"
+        default=["openid", "profile", "email", "offline_access"], description="Scopes supportati"
     )
     supported_response_types: List[str] = Field(
         default=["code", "token", "id_token", "code id_token", "code token", "id_token token", "code id_token token"],
-        description="Response types supportati"
+        description="Response types supportati",
     )
     supported_grant_types: List[str] = Field(
-        default=["authorization_code", "refresh_token"],
-        description="Grant types supportati"
+        default=["authorization_code", "refresh_token"], description="Grant types supportati"
     )
 
 

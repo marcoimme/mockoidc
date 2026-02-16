@@ -1,9 +1,11 @@
-from typing import Optional, List
-from pydantic import BaseModel, Field
+from typing import List, Optional
+
+from pydantic import BaseModel
 
 
 class TokenRequest(BaseModel):
     """Request per il token endpoint"""
+
     grant_type: str
     code: Optional[str] = None
     redirect_uri: Optional[str] = None
@@ -15,6 +17,7 @@ class TokenRequest(BaseModel):
 
 class TokenResponse(BaseModel):
     """Response del token endpoint"""
+
     access_token: str
     token_type: str = "Bearer"
     expires_in: int
@@ -25,6 +28,7 @@ class TokenResponse(BaseModel):
 
 class DiscoveryResponse(BaseModel):
     """Response del discovery endpoint"""
+
     issuer: str
     authorization_endpoint: str
     token_endpoint: str
@@ -38,15 +42,31 @@ class DiscoveryResponse(BaseModel):
     scopes_supported: List[str]
     token_endpoint_auth_methods_supported: List[str] = ["client_secret_post", "client_secret_basic", "none"]
     claims_supported: List[str] = [
-        "sub", "iss", "aud", "exp", "iat", "auth_time", "nonce",
-        "name", "given_name", "family_name", "email", "email_verified",
-        "oid", "tid", "upn", "preferred_username", "roles", "groups"
+        "sub",
+        "iss",
+        "aud",
+        "exp",
+        "iat",
+        "auth_time",
+        "nonce",
+        "name",
+        "given_name",
+        "family_name",
+        "email",
+        "email_verified",
+        "oid",
+        "tid",
+        "upn",
+        "preferred_username",
+        "roles",
+        "groups",
     ]
     code_challenge_methods_supported: List[str] = ["plain", "S256"]
 
 
 class JWK(BaseModel):
     """JSON Web Key"""
+
     kty: str
     use: str
     kid: str
@@ -57,11 +77,13 @@ class JWK(BaseModel):
 
 class JWKSResponse(BaseModel):
     """JWKS response"""
+
     keys: List[JWK]
 
 
 class UserInfoResponse(BaseModel):
     """Response del userinfo endpoint"""
+
     sub: str
     name: Optional[str] = None
     given_name: Optional[str] = None
@@ -78,6 +100,7 @@ class UserInfoResponse(BaseModel):
 
 class AuthorizationCode:
     """Authorization code con i dati associati"""
+
     def __init__(
         self,
         code: str,
@@ -87,7 +110,7 @@ class AuthorizationCode:
         user_claims: dict,
         code_challenge: Optional[str] = None,
         code_challenge_method: Optional[str] = None,
-        nonce: Optional[str] = None
+        nonce: Optional[str] = None,
     ):
         self.code = code
         self.client_id = client_id
