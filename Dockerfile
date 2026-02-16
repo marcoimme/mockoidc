@@ -1,19 +1,26 @@
 # Mock OIDC Server - Dockerfile
 # Build stage
-FROM python:3.12-alpine AS py-build
+FROM python:3.13-slim AS py-build
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
+# Install build dependencies for compiling Python packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    UV_SYSTEM_PYTHON=1
+    PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
 # Copy dependency files and README (required by hatchling)
 COPY pyproject.toml uv.lock* README.md ./
 
-# Install dependencies (sync from lock file if exists, otherwise resolve and install)
+# Install dependencies in virtual environment
 RUN uv sync --locked --no-dev || uv sync --no-dev
 
 # Copy application files
@@ -21,28 +28,35 @@ COPY main.py config.py models.py token_service.py jwks_service.py claims_generat
 COPY .env.example .env
 
 # Final stage
-FROM python:3.12-alpine
+FROM python:3.13-slim
 
 # Metadata
 LABEL maintainer="Mock OIDC Server"
 LABEL description="Mock OpenID Connect Provider for testing and development"
 LABEL version="1.0.0"
 
+# Install wget for healthcheck
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends wget && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     HOST=0.0.0.0 \
-    PORT=8080
+    PORT=8080 \
+    PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
 
-# Copy application and dependencies from build stage
-COPY --from=py-build /app /app
-COPY --from=py-build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+# Copy virtual environment and application from build stage
+COPY --from=py-build /app/.venv /app/.venv
+COPY --from=py-build /app/*.py /app/
+COPY --from=py-build /app/.env /app/.env
 
-# Create non-root user for security (Alpine syntax)
-RUN addgroup -g 1000 oidc && \
-    adduser -D -u 1000 -G oidc oidc && \
+# Create non-root user for security
+RUN groupadd -g 1000 oidc && \
+    useradd -m -u 1000 -g oidc oidc && \
     chown -R oidc:oidc /app
 
 # Switch to non-root user
