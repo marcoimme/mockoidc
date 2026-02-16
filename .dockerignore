@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Documentation
+*.md
+!README.md
+DEMO.md
+IMPLEMENTATION.md
+QUICKSTART.md
+START_HERE.md
+DYNAMIC_AUTH_CHANGELOG.md
+
+# Test files
+test_*.py
+callback_server.py
+
+# Scripts
+start_test_env.sh
+
+# Logs
+*.log
+/tmp/
+
+# Environment
+.env
+!.env.example
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Misc
+STATUS.txt

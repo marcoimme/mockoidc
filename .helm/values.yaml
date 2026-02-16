@@ -1,0 +1,163 @@
+# Default values for mockoidc
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: mockoidc
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+  # nodePort: 30080  # Used when type is NodePort (kind, minikube)
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: mockoidc.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: mockoidc-tls
+  #    hosts:
+  #      - mockoidc.example.com
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Mock OIDC Server Configuration
+config:
+  # Server configuration
+  port: 8080
+  
+  # NOTA: issuer e base_url sono calcolati DINAMICAMENTE dal server
+  # in base all'host della richiesta HTTP. Non è necessario configurarli.
+  # Il server si adatta automaticamente a localhost, IP, DNS, Ingress hostname, ecc.
+  
+  # Dynamic claims configuration (when MOCK_USERS is null/empty)
+  dynamicClaims:
+    enabled: true
+    defaultRoles:
+      - "User"
+    defaultGroups:
+      - "Everyone"
+    defaultTenantId: "common"
+  
+  # Pre-configured users (set to null or [] to enable dynamic mode)
+  # In dynamic mode, any email/password combination is accepted
+  mockUsers: []
+  # Example pre-configured users:
+  # mockUsers:
+  #   - email: "mario.rossi@company.com"
+  #     password: "password123"
+  #     claims:
+  #       name: "Mario Rossi"
+  #       given_name: "Mario"
+  #       family_name: "Rossi"
+  #       preferred_username: "mario.rossi@company.com"
+
+# Environment variables to inject
+env: []
+# - name: LOG_LEVEL
+#   value: "INFO"
+# - name: ISSUER
+#   value: "https://mockoidc.example.com"
+
+# Environment variables from secrets/configmaps
+envFrom: []
+# - configMapRef:
+#     name: mockoidc-config
+# - secretRef:
+#     name: mockoidc-secrets

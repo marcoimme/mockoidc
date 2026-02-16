@@ -1,0 +1,54 @@
+# Configuration for local development with Minikube or Kind
+replicaCount: 1
+
+image:
+  repository: mockoidc
+  pullPolicy: Never  # Use local image
+  tag: "latest"
+
+service:
+  type: NodePort  # For easy access in local cluster
+  port: 8080
+  nodePort: 30080  # Fixed NodePort for consistency
+
+ingress:
+  enabled: false  # Usually not needed for local dev
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+config:
+  issuer: "http://localhost:8080"
+  port: 8080
+  
+  dynamicClaims:
+    enabled: true
+    defaultRoles:
+      - "Developer"
+      - "Admin"
+    defaultGroups:
+      - "LocalDev"
+      - "Developers"
+    defaultTenantId: "local-dev"
+  
+  mockUsers: []
+
+env:
+  - name: LOG_LEVEL
+    value: "DEBUG"
+  - name: ENVIRONMENT
+    value: "local"
+
+# No resource restrictions for local dev
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  initialDelaySeconds: 3
+  periodSeconds: 5

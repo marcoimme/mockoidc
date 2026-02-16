@@ -1,0 +1,87 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: mockoidc
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ env.IMAGE_NAME }}:test .
+    
+    - name: Start container for testing
+      run: |
+        docker run -d \
+          --name mockoidc-test \
+          -p 8080:8080 \
+          ${{ env.IMAGE_NAME }}:test
+        
+        # Wait for server to be ready
+        timeout 30 bash -c 'until curl -f http://localhost:8080/health; do sleep 2; done'
+    
+    - name: Test endpoints
+      run: |
+        # Health check
+        curl -f http://localhost:8080/health || exit 1
+        
+        # Discovery endpoint
+        curl -f http://localhost:8080/.well-known/openid-configuration || exit 1
+        
+        # JWKS endpoint
+        curl -f http://localhost:8080/jwks || exit 1
+        
+        echo "All tests passed!"
+    
+    - name: View logs on failure
+      if: failure()
+      run: docker logs mockoidc-test
+    
+    - name: Stop container
+      if: always()
+      run: docker rm -f mockoidc-test
+    
+    - name: Login to Docker Hub
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+    
+    - name: Extract metadata
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+    
+    - name: Build and push
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

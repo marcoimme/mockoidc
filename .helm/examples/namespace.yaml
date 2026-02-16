@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mockoidc-system
+  labels:
+    name: mockoidc-system
+    app: mockoidc
+    environment: production

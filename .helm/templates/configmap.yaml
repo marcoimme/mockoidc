@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mockoidc.fullname" . }}-config
+  labels:
+    {{- include "mockoidc.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {
+      "port": {{ .Values.config.port }},
+      "note": "issuer and base_url are calculated dynamically based on HTTP request host",
+      "dynamicClaims": {
+        "enabled": {{ .Values.config.dynamicClaims.enabled }},
+        "defaultRoles": {{ .Values.config.dynamicClaims.defaultRoles | toJson }},
+        "defaultGroups": {{ .Values.config.dynamicClaims.defaultGroups | toJson }},
+        "defaultTenantId": {{ .Values.config.dynamicClaims.defaultTenantId | quote }}
+      },
+      "mockUsers": {{ .Values.config.mockUsers | toJson }}
+    }
