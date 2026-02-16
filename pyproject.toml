@@ -32,7 +32,7 @@ dependencies = [
     "httpx==0.26.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
@@ -52,13 +52,6 @@ only-include = [
     "token_service.py",
     "jwks_service.py",
     "claims_generator.py",
-]
-
-[tool.uv]
-dev-dependencies = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "httpx>=0.24.0",
 ]
 
 [tool.ruff]

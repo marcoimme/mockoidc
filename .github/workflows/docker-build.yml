@@ -33,8 +33,18 @@ jobs:
           -p 8080:8080 \
           ${{ env.IMAGE_NAME }}:test
         
+        # Wait a moment for container to start
+        sleep 5
+        
+        # Check if container is running
+        if ! docker ps | grep mockoidc-test; then
+          echo "Container failed to start. Logs:"
+          docker logs mockoidc-test 2>&1 || echo "No logs available"
+          exit 1
+        fi
+        
         # Wait for server to be ready
-        timeout 30 bash -c 'until curl -f http://localhost:8080/health; do sleep 2; done'
+        timeout 30 bash -c 'until curl -f http://localhost:8080/health 2>/dev/null; do sleep 2; done'
     
     - name: Test endpoints
       run: |
@@ -51,11 +61,15 @@ jobs:
     
     - name: View logs on failure
       if: failure()
-      run: docker logs mockoidc-test
+      run: |
+        echo "Container status:"
+        docker ps -a | grep mockoidc-test || echo "Container not found"
+        echo "Container logs:"
+        docker logs mockoidc-test 2>&1 || echo "No logs available"
     
     - name: Stop container
       if: always()
-      run: docker rm -f mockoidc-test
+      run: docker rm -f mockoidc-test 2>/dev/null || true
     
     - name: Login to Docker Hub
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
