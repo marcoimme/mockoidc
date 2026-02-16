@@ -1,10 +1,16 @@
 from typing import Dict, List
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 
 class Settings(BaseSettings):
     """Configurazione del mock OIDC server"""
+    
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"  # Ignora campi extra (base_url e issuer sono calcolati dinamicamente)
+    )
     
     # Server settings
     host: str = Field(default="0.0.0.0", description="Host del server")
@@ -29,10 +35,6 @@ class Settings(BaseSettings):
         default=["authorization_code", "refresh_token"],
         description="Grant types supportati"
     )
-    
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 
 # Mock users configuration (opzionale - se None, qualsiasi credenziale viene accettata)
