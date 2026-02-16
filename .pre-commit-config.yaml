@@ -1,0 +1,49 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-docstring-first
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.3.1
+    hooks:
+      - id: remove-crlf
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/espressif/conventional-precommit-linter
+    rev: v1.0.0
+    hooks:
+      - id: conventional-precommit-linter
+        stages: [commit-msg]
+        args:
+          - --types=change,ci,docs,feat,fix,refactor,remove,revert
+          - --subject-min-length=10
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.15.0
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+      # Run the formatter.
+      - id: ruff-format
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.10.0
+    hooks:
+      - id: hadolint
+        name: hadolint
+        description: Lint Dockerfiles
+        entry: hadolint
+        language: system
+        types: [dockerfile]
+        args: ["-c", ".config/lint/hadolint.yaml", "Dockerfile"]

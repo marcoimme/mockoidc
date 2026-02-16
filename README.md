@@ -1,11 +1,11 @@
 # Mock OIDC Server
 
-Un'implementazione Python di un server mock OpenID Connect (OIDC) per testing e sviluppo, costruito con FastAPI.
+A Python implementation of a mock OpenID Connect (OIDC) server for testing and development, built with FastAPI.
 
-## Caratteristiche
+## Features
 
-- **Endpoint OIDC Standard**:
-  - Discovery (`.well-known/openid-configuration`) con **URL dinamici**
+- **Standard OIDC Endpoints**:
+  - Discovery (`.well-known/openid-configuration`) with **dynamic URLs**
   - Authorization (`/authorize`)
   - Token (`/token`)
   - UserInfo (`/userinfo`)
@@ -13,35 +13,35 @@ Un'implementazione Python di un server mock OpenID Connect (OIDC) per testing e 
   - Revoke (`/revoke`)
   - Logout (`/logout`)
 
-- **Sicurezza**:
-  - JWT firmati con RS256
-  - Supporto PKCE (Proof Key for Code Exchange)
+- **Security**:
+  - JWT signed with RS256
+  - PKCE (Proof Key for Code Exchange) support
   - Authorization Code Flow
   - Refresh Token Flow
 
-- **Utenti Mock**:
-  - Utenti configurabili con claims personalizzati
-  - Claims compatibili con Azure AD (oid, tid, upn, roles, groups)
-  - Form di login interattivo
+- **Mock Users**:
+  - Configurable users with custom claims
+  - Azure AD compatible claims (oid, tid, upn, roles, groups)
+  - Interactive login form
 
-- **Configurazione**:
-  - Configurabile via variabili d'ambiente
-  - Storage in-memory per codes e tokens
-  - Logging dettagliato
+- **Configuration**:
+  - Configurable via environment variables
+  - In-memory storage for codes and tokens
+  - Detailed logging
 
-- **Deploy**:
+- **Deployment**:
   - Docker & Docker Compose ready
-  - Helm chart per Kubernetes
-  - Supporto per HA e autoscaling
+  - Helm chart for Kubernetes
+  - HA and autoscaling support
 
-## 📦 Installazione
+## 📦 Installation
 
-### Prerequisiti
+### Prerequisites
 
 - Python 3.8+
-- [uv](https://github.com/astral-sh/uv) (gestore pacchetti Python veloce)
+- [uv](https://github.com/astral-sh/uv) (fast Python package manager)
 
-### Installazione di uv
+### Installing uv
 
 ```bash
 # Linux/macOS
@@ -50,161 +50,161 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Windows
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Oppure tramite pip
+# Or via pip
 pip install uv
 ```
 
 ### Setup
 
-1. **Clona il repository** (o crea la directory):
+1. **Clone the repository** (or create the directory):
 ```bash
 cd mockoidc
 ```
 
-2. **Crea un virtual environment e installa le dipendenze**:
+2. **Create a virtual environment and install dependencies**:
 ```bash
-# uv crea automaticamente il venv e installa tutto
+# uv automatically creates the venv and installs everything
 uv sync
 
-# Oppure manualmente
+# Or manually
 uv venv
-source .venv/bin/activate  # Su Linux/Mac
-# oppure
-.venv\Scripts\activate  # Su Windows
+source .venv/bin/activate  # On Linux/Mac
+# or
+.venv\Scripts\activate  # On Windows
 uv pip install -e .
 ```
 
-4. **Configura l'ambiente** (opzionale):
+3. **Configure the environment** (optional):
 ```bash
 cp .env.example .env
-# Modifica .env secondo le tue necessità
+# Edit .env as needed
 ```
 
-## 🚀 Avvio
+## 🚀 Getting Started
 
-### Modo 1: Test Visuale con UI Web (Consigliato ⭐)
+### Method 1: Visual Test with Web UI (Recommended ⭐)
 
-Il modo più semplice per testare l'intero flusso:
+The easiest way to test the entire flow:
 
-**Terminale 1 - Server OIDC:**
+**Terminal 1 - OIDC Server:**
 ```bash
 uv run python main.py
-# Server OIDC disponibile su http://localhost:8080
+# OIDC server available at http://localhost:8080
 ```
 
-**Terminale 2 - Server Callback Demo:**
+**Terminal 2 - Demo Callback Server:**
 ```bash
 uv run python demo/callback_server.py
-# UI demo disponibile su http://localhost:3000
+# Demo UI available at http://localhost:3000
 ```
 
-Poi apri il browser su **http://localhost:3000** e segui il flusso interattivo!
+Then open your browser at **http://localhost:3000** and follow the interactive flow!
 
-Vedrai:
-- 📝 Form di login con UI professionale
-- 🎫 Authorization code generato
-- 🔐 Access token, ID token e Refresh token
-- 📋 Tutti i claims decodificati (oid, tid, upn, roles, groups)
-- ✨ UI moderna e responsive
+You'll see:
+- 📝 Login form with professional UI
+- 🎫 Generated authorization code
+- 🔐 Access token, ID token and Refresh token
+- 📋 All decoded claims (oid, tid, upn, roles, groups)
+- ✨ Modern and responsive UI
 
-### Modo 2: Solo Server OIDC
+### Method 2: OIDC Server Only
 
-Se vuoi solo il server mock senza la UI di test:
+If you just want the mock server without the test UI:
 
 ```bash
-# Usando Python direttamente
+# Using Python directly
 uv run python main.py
 ```
 
-Oppure:
+Or:
 
 ```bash
-# Usando Uvicorn
+# Using Uvicorn
 uv run uvicorn main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-Il server sarà disponibile su `http://localhost:8080`
+The server will be available at `http://localhost:8080`
 
-## � Demo - Come funziona
+## 🎯 Demo - How it Works
 
-### Demo Completa con UI Interattiva
+### Complete Demo with Interactive UI
 
-La demo include due componenti:
+The demo includes two components:
 
-1. **Mock OIDC Server** (porta 8080) - Simula un provider OIDC come Azure AD
-2. **Callback Demo Server** (porta 3000) - Simula la tua applicazione client
+1. **Mock OIDC Server** (port 8080) - Simulates an OIDC provider like Azure AD
+2. **Callback Demo Server** (port 3000) - Simulates your client application
 
-#### Avvio dell'ambiente demo
+#### Starting the Demo Environment
 
-**Passo 1: Avvia il server OIDC**
+**Step 1: Start the OIDC server**
 ```bash
-# Terminale 1
+# Terminal 1
 uv run python main.py
 ```
 
-Output atteso:
+Expected output:
 ```
 INFO:     Started server process
 INFO:     Uvicorn running on http://0.0.0.0:8080
 INFO:     Application startup complete.
 ```
 
-**Passo 2: Avvia il server callback demo**
+**Step 2: Start the demo callback server**
 ```bash
-# Terminale 2 (in una nuova finestra)
+# Terminal 2 (in a new window)
 uv run python demo/callback_server.py
 ```
 
-Output atteso:
+Expected output:
 ```
  * Running on http://0.0.0.0:3000
  * Press CTRL+C to quit
 ```
 
-#### Flusso della demo
+#### Demo Flow
 
-**1. Apri la home page della demo**
+**1. Open the demo home page**
 ```
 http://localhost:3000
 ```
 
-Vedrai un pulsante "Avvia Login OIDC" con informazioni sul flusso.
+You'll see a "Start OIDC Login" button with flow information.
 
-**2. Clicca su "Avvia Login OIDC"**
+**2. Click on "Start OIDC Login"**
 
-Vieni reindirizzato al server OIDC:
+You'll be redirected to the OIDC server:
 ```
 http://localhost:8080/authorize?response_type=code&client_id=demo-app&redirect_uri=http://localhost:3000/callback&scope=openid+profile+email&state=xyz789
 ```
 
-**3. Inserisci le credenziali di test**
+**3. Enter test credentials**
 
-Form di login con utenti pre-configurati:
+Login form with pre-configured users:
 - 👤 **User 1**: `user1@example.com` / `password1`
   - Role: User
   - Groups: developers, users
-  
+
 - 👨‍💼 **Admin**: `admin@example.com` / `admin123`
   - Role: Admin
   - Groups: admins, managers
 
-**4. Autorizza l'applicazione**
+**4. Authorize the application**
 
-Dopo il login, vieni reindirizzato al callback con l'authorization code:
+After login, you'll be redirected to the callback with the authorization code:
 ```
 http://localhost:3000/callback?code=abc123xyz&state=xyz789
 ```
 
-**5. Visualizza i token**
+**5. View the tokens**
 
-La pagina di callback mostra:
+The callback page shows:
 
 ✅ **Authorization Code**
 ```
 abc123xyz
 ```
 
-✅ **Access Token** (JWT decodificato)
+✅ **Access Token** (decoded JWT)
 ```json
 {
   "sub": "550e8400-e29b-41d4-a716-446655440000",
@@ -220,7 +220,7 @@ abc123xyz
 }
 ```
 
-✅ **ID Token** (JWT decodificato)
+✅ **ID Token** (decoded JWT)
 ```json
 {
   "sub": "550e8400-e29b-41d4-a716-446655440000",
@@ -239,9 +239,9 @@ abc123xyz
 refresh_abc123xyz
 ```
 
-**6. Testa il refresh token**
+**6. Test the refresh token**
 
-Puoi usare il refresh token per ottenere nuovi access token:
+You can use the refresh token to obtain new access tokens:
 ```bash
 curl -X POST http://localhost:8080/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
@@ -249,111 +249,109 @@ curl -X POST http://localhost:8080/token \
   -d "refresh_token=refresh_abc123xyz"
 ```
 
-### Test rapido senza UI
+### Quick Test Without UI
 
-Se preferisci testare via API senza l'interfaccia web:
+If you prefer to test via API without the web interface:
 
 ```bash
-# 1. Ottieni la configurazione OIDC
+# 1. Get the OIDC configuration
 curl http://localhost:8080/.well-known/openid-configuration | jq
 
-# 2. Ottieni le chiavi pubbliche
+# 2. Get the public keys
 curl http://localhost:8080/jwks | jq
 
-# 3. Apri nel browser per il login
+# 3. Open in browser for login
 open "http://localhost:8080/authorize?response_type=code&client_id=test&redirect_uri=http://localhost:3000/callback&scope=openid%20profile%20email&state=test123"
 
-# 4. Dopo il login, copia il code dall'URL e scambialo con i token
+# 4. After login, copy the code from the URL and exchange it for tokens
 curl -X POST http://localhost:8080/token \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=authorization_code" \
-  -d "code=IL_TUO_CODE" \
+  -d "code=YOUR_CODE" \
   -d "redirect_uri=http://localhost:3000/callback" \
   -d "client_id=test" | jq
 
-# 5. Usa l'access token per ottenere info utente
+# 5. Use the access token to get user info
 curl http://localhost:8080/userinfo \
-  -H "Authorization: Bearer IL_TUO_ACCESS_TOKEN" | jq
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" | jq
 ```
 
-## �🌐 Discovery con URL Dinamici
+## 🌐 Discovery with Dynamic URLs
 
-Una caratteristica importante: il Mock OIDC Server adatta **automaticamente** gli URL nella risposta discovery (`.well-known/openid-configuration`) e **l'issuer nei token JWT** in base all'host:port della richiesta HTTP.
+An important feature: The Mock OIDC Server **automatically adapts** the URLs in the discovery response (`.well-known/openid-configuration`) and **the issuer in JWT tokens** based on the host:port of the HTTP request.
 
-**Esempi**:
+**Examples**:
 ```bash
-# Chiamata con localhost
+# Request with localhost
 curl http://localhost:8080/.well-known/openid-configuration
 # → issuer: "http://localhost:8080"
 # → authorization_endpoint: "http://localhost:8080/authorize"
 
-# I token JWT generati avranno:
+# Generated JWT tokens will have:
 # access_token: { "iss": "http://localhost:8080", ... }
 # id_token: { "iss": "http://localhost:8080", ... }
 
-# Chiamata con IP
+# Request with IP
 curl http://127.0.0.1:8080/.well-known/openid-configuration  
 # → issuer: "http://127.0.0.1:8080"
-# → I token avranno: "iss": "http://127.0.0.1:8080"
+# → Tokens will have: "iss": "http://127.0.0.1:8080"
 
 # In Kubernetes
 curl http://mockoidc.default.svc.cluster.local:8080/.well-known/openid-configuration
 # → issuer: "http://mockoidc.default.svc.cluster.local:8080"
-# → I token avranno lo stesso issuer
+# → Tokens will have the same issuer
 ```
 
-**Vantaggi**:
-- ✅ Funziona in locale, Docker, Kubernetes senza modificare configurazione
-- ✅ Gli applicativi client ricevono sempre gli URL corretti
-- ✅ **I token JWT hanno sempre l'issuer corretto** per l'ambiente
-- ✅ Validazione dell'issuer sempre consistente
-- ✅ Nessuna necessità di configurare `ISSUER` manualmente
+**Benefits**:
+- ✅ Works locally, in Docker, Kubernetes without changing configuration
+- ✅ Client applications always receive the correct URLs
+- ✅ **JWT tokens always have the correct issuer** for the environment
+- ✅ Issuer validation always consistent
+- ✅ No need to manually configure `ISSUER`
 
-## 📖 Utilizzo
-
-
+## 📖 Usage
 
 ## 🔍 API Documentation
 
-FastAPI genera automaticamente la documentazione interattiva:
+FastAPI automatically generates interactive documentation:
 
 - **Swagger UI**: http://localhost:8080/docs
 - **ReDoc**: http://localhost:8080/redoc
 
-## ☸️ Deploy su Kubernetes
+## ☸️ Deploy to Kubernetes
 
-Il progetto include un chart Helm completo per il deployment su cluster Kubernetes.
+The project includes a complete Helm chart for deployment to Kubernetes clusters.
 
-### Quick Start Kubernetes
+### Kubernetes Quick Start
 
 ```bash
-# 1. Build dell'immagine Docker
+# 1. Build the Docker image
 docker build -t mockoidc:1.0.0 .
 
-# 2. Deploy con Helm (ambiente dev)
+# 2. Deploy with Helm (dev environment)
 helm install mockoidc .helm/ -f .helm/values-dev.yaml
 
-# 3. Port-forward per accesso locale
+# 3. Port-forward for local access
 kubectl port-forward svc/mockoidc 8080:8080
 
 # 4. Test
 curl http://localhost:8080/health
 ```
 
-### Deploy in Produzione
+### Production Deployment
 
 ```bash
-# Con ingress e TLS
+# With ingress and TLS
 helm install mockoidc .helm/ -f .helm/values-prod.yaml
 
-# Con autoscaling abilitato
+# With autoscaling enabled
 helm install mockoidc .helm/ \
   --set autoscaling.enabled=true \
   --set autoscaling.minReplicas=3 \
   --set autoscaling.maxReplicas=10
 ```
 
-### Gestione
+### Management
 
 ```bash
 # Upgrade
@@ -369,19 +367,19 @@ kubectl logs -l app.kubernetes.io/name=mockoidc -f
 helm uninstall mockoidc
 ```
 
-## ⚠️ Note di Sicurezza
+## ⚠️ Security Notes
 
-**ATTENZIONE**: Questo è un server MOCK per testing/sviluppo.
+**WARNING**: This is a MOCK server for testing/development.
 
-❌ **NON usare in produzione**
-- Storage in-memory (dati persi al restart)
-- Nessuna validazione robusta client_id/secret
-- Chiavi RSA generate dinamicamente
+❌ **DO NOT use in production**
+- In-memory storage (data lost on restart)
+- No robust client_id/secret validation
+- Dynamically generated RSA keys
 
-## 🤝 Contributi
+## 🤝 Contributing
 
-I contributi sono benvenuti! Apri una issue o una pull request.
+Contributions are welcome! Open an issue or pull request.
 
-## 📞 Supporto
+## 📞 Support
 
-Per problemi o domande, apri una issue su GitHub.
+For issues or questions, open an issue on GitHub.
