@@ -25,7 +25,7 @@ resources:
 config:
   issuer: "http://localhost:8080"
   port: 8080
-  
+
   dynamicClaims:
     enabled: true
     defaultRoles:
@@ -35,7 +35,7 @@ config:
       - "LocalDev"
       - "Developers"
     defaultTenantId: "local-dev"
-  
+
   mockUsers: []
 
 env:

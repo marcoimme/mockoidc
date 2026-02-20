@@ -121,11 +121,11 @@ affinity: {}
 config:
   # Server configuration
   port: 8080
-  
+
   # NOTA: issuer e base_url sono calcolati DINAMICAMENTE dal server
   # in base all'host della richiesta HTTP. Non è necessario configurarli.
   # Il server si adatta automaticamente a localhost, IP, DNS, Ingress hostname, ecc.
-  
+
   # Dynamic claims configuration (when MOCK_USERS is null/empty)
   dynamicClaims:
     enabled: true
@@ -134,7 +134,7 @@ config:
     defaultGroups:
       - "Everyone"
     defaultTenantId: "common"
-  
+
   # Pre-configured users (set to null or [] to enable dynamic mode)
   # In dynamic mode, any email/password combination is accepted
   mockUsers: []

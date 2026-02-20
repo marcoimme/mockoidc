@@ -6,12 +6,20 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ← aggiunto, necessario per creare releases e gh-pages
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: .helm/    # o la dir che contiene .helm
+          charts_dir: charts   # ← punta alla cartella che contiene "mockoidc/"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

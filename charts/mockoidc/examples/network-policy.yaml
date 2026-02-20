@@ -10,7 +10,7 @@ spec:
   policyTypes:
     - Ingress
     - Egress
-  
+
   ingress:
     # Allow traffic from ingress controller
     - from:
@@ -20,14 +20,14 @@ spec:
       ports:
       - protocol: TCP
         port: 8080
-    
+
     # Allow traffic from same namespace (for testing)
     - from:
       - podSelector: {}
       ports:
       - protocol: TCP
         port: 8080
-    
+
     # Allow traffic from monitoring namespace
     - from:
       - namespaceSelector:
@@ -36,7 +36,7 @@ spec:
       ports:
       - protocol: TCP
         port: 8080
-  
+
   egress:
     # Allow DNS
     - to:
@@ -46,14 +46,14 @@ spec:
       ports:
       - protocol: UDP
         port: 53
-    
+
     # Allow HTTPS to external services
     - to:
       - namespaceSelector: {}
       ports:
       - protocol: TCP
         port: 443
-    
+
     # Allow HTTP to external services (if needed)
     - to:
       - namespaceSelector: {}
