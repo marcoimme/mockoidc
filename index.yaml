@@ -2,6 +2,34 @@ apiVersion: v1
 entries:
   mockoidc:
   - annotations:
+      artifacthub.io/images: |
+        - name: oidcmock
+          image: marcoimme/oidcmock:latest
+      artifacthub.io/license: Apache-2.0
+    apiVersion: v2
+    appVersion: 1.0.2
+    created: "2026-02-20T20:55:47.040531342Z"
+    description: A Python implementation of a mock OpenID Connect (OIDC) server for
+      testing and development.
+    digest: 401527fb420dd87515aab4ffd95f4236388251e0e2f52524f402c2f49329ef3e
+    home: https://github.com/marco/mockoidc
+    keywords:
+    - oidc
+    - oauth2
+    - mock
+    - testing
+    - authentication
+    maintainers:
+    - email: marco@example.com
+      name: Marco
+    name: mockoidc
+    sources:
+    - https://github.com/marco/mockoidc
+    type: application
+    urls:
+    - https://github.com/marcoimme/mockoidc/releases/download/mockoidc-1.0.2/mockoidc-1.0.2.tgz
+    version: 1.0.2
+  - annotations:
       artifacthub.io/license: Apache-2.0
     apiVersion: v2
     appVersion: 1.0.1
@@ -26,4 +54,4 @@ entries:
     urls:
     - https://github.com/marcoimme/mockoidc/releases/download/mockoidc-1.0.1/mockoidc-1.0.1.tgz
     version: 1.0.1
-generated: "2026-02-20T15:25:41.264136962Z"
+generated: "2026-02-20T20:55:47.040538705Z"
