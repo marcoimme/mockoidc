@@ -21,5 +21,6 @@ jobs:
       - uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: charts   # ← punta alla cartella che contiene "mockoidc/"
+          skip_existing: true    # ← evita errori se il chart esiste già
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
