@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mockoidc
-description: A Helm chart for Mock OIDC Server - OpenID Connect mock server for testing
+description: A Python implementation of a mock OpenID Connect (OIDC) server for testing and development.
 type: application
 version: 1.0.0
 appVersion: "1.0.0"
@@ -11,6 +11,10 @@ keywords:
   - testing
   - authentication
 home: https://github.com/marco/mockoidc
+sources:
+  - https://github.com/marco/mockoidc
 maintainers:
   - name: Marco
     email: marco@example.com
+annotations:
+  artifacthub.io/license: Apache-2.0

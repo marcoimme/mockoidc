@@ -1,0 +1,17 @@
+name: Release Charts
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: .helm/    # o la dir che contiene .helm
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
