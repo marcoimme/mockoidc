@@ -2,8 +2,8 @@ apiVersion: v2
 name: mockoidc
 description: A Python implementation of a mock OpenID Connect (OIDC) server for testing and development.
 type: application
-version: 1.0.2
-appVersion: "1.0.2"
+version: 0.0.1
+appVersion: "0.0.1"
 keywords:
   - oidc
   - oauth2
