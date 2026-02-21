@@ -10,12 +10,12 @@ keywords:
   - mock
   - testing
   - authentication
-home: https://github.com/marco/mockoidc
+home: https://github.com/marcoimme/mockoidc
 sources:
-  - https://github.com/marco/mockoidc
+  - https://github.com/marcoimme/mockoidc
 maintainers:
-  - name: Marco
-    email: marco@example.com
+  - name: Marco Immediato
+    email: marcoimme@gmail.com
 annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/images: |
